@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
+import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-root',
@@ -9,55 +11,30 @@ import { AngularFire, FirebaseListObservable } from 'angularfire2';
 export class AppComponent implements OnInit {
   title = 'app works!';
   cuisines : FirebaseListObservable<any[]>;
-  restaurant;
+  restaurants : Observable<any[]>;
 
   constructor(private _af:AngularFire){}
 
   ngOnInit(){
-  //  this.subscription = this._af.database.list('/cuisines').subscribe((x) => {
-  //     this.cuisines = x;
-  //     console.log(this.cuisines);
-  //   })
-
+    // this._af.database.object('/cuisines').subscribe(x => console.log("Object",x));
+    // this._af.database.list('/cuisines').subscribe(x => console.log("list",x));
     this.cuisines = this._af.database.list('/cuisines');
-    this.restaurant = this._af.database.object('/restaurant');
-  }
-
-  add() {
-    this.cuisines.push('Asian');
-  }
-
-  update(){
-    this._af.database.object('/restaurant').set({
-      name: 'New Name',
-      rating: 5
+    this.restaurants = this._af.database.list('/restaurants')
+    .map(restaurants => {
+      restaurants.map((restaurant) =>{
+       restaurant.featureTypes = [];
+       for (var f in restaurant.features){
+         restaurant.featureTypes.push(this._af.database.object('/features/'+f))
+       }     
+      });
+      return restaurants;
     });
-  }
-
-  remove(){
-    //this._af.database.object('/restaurant').set(null);
-    this._af.database.object('/restaurant').remove()
-    .then((x) => console.log("SUCCESS"))
-    .catch((error) => console.log("Error",error));
   }
 }
 
 
 //**************************************************************************************
 
-// This will update any of the object in database.
-
-// this._af.database.object('/restaurant').update({
-//   name: 'New Name',
-//   rating: 5
-// });
-
-// This will replace all data of database.
-
-// this._af.database.object('/restaurant').set({
-//   name: 'New Name',
-//   rating: 5
-// });
 
 
 
