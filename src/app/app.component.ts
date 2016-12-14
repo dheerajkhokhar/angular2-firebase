@@ -31,6 +31,33 @@ export class AppComponent implements OnInit {
     this._af.database.object('/restaurant').set({
       name: 'New Name',
       rating: 5
-    })
+    });
+  }
+
+  remove(){
+    //this._af.database.object('/restaurant').set(null);
+    this._af.database.object('/restaurant').remove()
+    .then((x) => console.log("SUCCESS"))
+    .catch((error) => console.log("Error",error));
   }
 }
+
+
+//**************************************************************************************
+
+// This will update any of the object in database.
+
+// this._af.database.object('/restaurant').update({
+//   name: 'New Name',
+//   rating: 5
+// });
+
+// This will replace all data of database.
+
+// this._af.database.object('/restaurant').set({
+//   name: 'New Name',
+//   rating: 5
+// });
+
+
+
