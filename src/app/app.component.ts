@@ -42,6 +42,7 @@ export class AppComponent implements OnInit {
     
     // /restaurants
     // /restaurants-by-city/camberwell
+    
 
     this._af.database.list('/restaurants').push({name:""})
     .then(x =>{
